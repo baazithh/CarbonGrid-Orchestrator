@@ -1,6 +1,8 @@
 import uuid
+import math
 from datetime import datetime, timedelta
 from app import datastore, forecast
+from app.daemon import REGIONS, get_h3_index, H3_RESOLUTION
 
 POWER_DRAW_KW = 0.250  # 250 Watts standard server node power
 NETWORK_CARBON_PER_GB = 0.05  # gCO2 per GB transferred across regions
@@ -113,7 +115,7 @@ def optimize_schedule(
     
     return {
         "target_region": best_region,
-        "target_h3": forecast.REGIONS[best_region], # Will fetch lat/lng coordinates to convert to H3 index
+        "target_h3": REGIONS[best_region],
         "start_offset_hours": best_offset,
         "scheduled_time": optimal_metrics["start_time"],
         "predicted_carbon_intensity": optimal_metrics["carbon_intensity"],
@@ -152,9 +154,9 @@ def schedule_job(
     
     target_region = opt["target_region"]
     # Get H3 index
-    lat = forecast.REGIONS[target_region]["lat"]
-    lng = forecast.REGIONS[target_region]["lng"]
-    target_h3 = forecast.get_h3_index(lat, lng)
+    lat = REGIONS[target_region]["lat"]
+    lng = REGIONS[target_region]["lng"]
+    target_h3 = get_h3_index(lat, lng)
     
     job_id = uuid.uuid4()
     
@@ -191,7 +193,7 @@ def schedule_job(
         "inputs": [
             {
                 "namespace": f"h3:resolution_{H3_RESOLUTION}",
-                "name": f"source_dataset:{forecast.get_h3_index(forecast.REGIONS[source_region]['lat'], forecast.REGIONS[source_region]['lng'])}",
+                "name": f"source_dataset:{get_h3_index(REGIONS[source_region]['lat'], REGIONS[source_region]['lng'])}",
                 "facets": {
                     "dataSource": {
                         "uri": f"h3://{source_region}"
