@@ -7,7 +7,7 @@ import clickhouse_connect
 CLICKHOUSE_HOST = os.getenv("CLICKHOUSE_HOST", "localhost")
 CLICKHOUSE_PORT = int(os.getenv("CLICKHOUSE_PORT", "8123"))
 CLICKHOUSE_USER = os.getenv("CLICKHOUSE_USER", "default")
-CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD", "")
+CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD", "carbongridpassword")
 
 def get_client():
     return clickhouse_connect.get_client(
