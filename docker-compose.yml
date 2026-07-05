@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: carbongrid-clickhouse
+    ports:
+      - "8123:8123" # HTTP JSON Client API
+      - "9000:9000" # Native Client API
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    restart: always
