@@ -51,7 +51,7 @@ def init_db():
             carbon_savings_g Float32,
             created_at DateTime
         ) ENGINE = MergeTree()
-        ORDER BY (status, created_at)
+        ORDER BY (job_id, created_at)
     """)
 
     # Create audit_logs table for OpenLineage-compliant lifecycle audit
